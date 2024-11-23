@@ -20,4 +20,6 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+
+  background: #2b2720;
 }

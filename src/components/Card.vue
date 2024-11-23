@@ -5,7 +5,7 @@
   width: 214px;
   border-radius: 10px;
   /* TODO: Background content/image instead */
-  background-color: lightslategray;
+  background-color: rgb(237, 167, 98);
   border: 2px solid;
   /* how much a card overlaps */
   margin-right: -100px;

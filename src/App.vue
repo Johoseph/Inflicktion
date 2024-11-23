@@ -6,6 +6,14 @@
   position: relative;
   top: 50px;
 }
+
+.overlay {
+  background: radial-gradient(circle, transparent 0%, rgb(0, 0, 0) 100%);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  pointer-events: none;
+}
 </style>
 
 <script setup>
@@ -38,6 +46,7 @@ onUnmounted(() => {
   <div class="card-wrapper" :style="{
     left: `${cardWrapperLeft}px`,
   }">
-    <Card v-for="card in cardConfig" :card="card" />
+    <Card v-for="card in cardConfig" :key="card" :card="card" />
   </div>
+  <div class="overlay"></div>
 </template>
