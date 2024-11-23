@@ -1,15 +1,17 @@
 <template>
   <div class="card" :style="{
     cursor: isClickable ? `pointer` : `not-allowed`
-  }"></div>
+  }" v-html="card">
+  </div>
 </template>
 
-<script>
+<script setup>
 import { defineProps } from "vue";
 
 defineProps({
-  isClickable: Boolean
-})
+  isClickable: Boolean,
+  card: String, // stringified svg
+});
 </script>
 
 <style scoped>
@@ -20,5 +22,9 @@ defineProps({
   border-radius: 10px;
   /* TODO: Background content/image instead */
   background-color: lightslategray;
+  border: 2px solid;
+  /* how much a card overlaps */
+  margin-right: -100px;
+  box-shadow: -8px 1px 25px -1px rgba(0, 0, 0, 0.75);
 }
 </style>
