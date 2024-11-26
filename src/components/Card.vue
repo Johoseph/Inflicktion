@@ -22,18 +22,19 @@
 import { defineProps, ref } from "vue";
 import { CARD_OVERLAP, CARD_WIDTH } from "../helpers/card";
 
-const { handleClick } = defineProps({
+const { onClick } = defineProps({
   isClickable: Boolean,
   card: String, // stringified svg
-  handleClick: Function,
+  onClick: Function,
 });
 
 // Clicked and pending closure
-const isActive = ref(false);
+const isAnimating = ref(false);
+const triggerCardAnimation = () => isAnimating.value = true;
 
 const handleCardClick = () => {
-  handleClick();
-  isActive.value = true;
+  onClick();
+  triggerCardAnimation();
 }
 </script>
 
@@ -43,7 +44,7 @@ const handleCardClick = () => {
     width: `${CARD_WIDTH}px`,
     marginRight: `-${CARD_OVERLAP}px`,
     cursor: isClickable ? `pointer` : `default`,
-    ...(isActive ? { bottom: `800px !important` } : {})
+    ...(isAnimating ? { bottom: `800px !important` } : {})
   }" v-html="card" @click="handleCardClick">
   </div>
 </template>
