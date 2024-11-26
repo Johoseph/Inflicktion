@@ -1,3 +1,10 @@
-export const CARD_WIDTH = 214;
-export const CARD_OVERLAP = 100;
-export const CARD_DISPLAY_WIDTH = CARD_WIDTH - CARD_OVERLAP; // how much space this consumes on the DOM
+export const getCardDimensions = (desiredHeight, cardOverlap) => {
+  const width = Math.round(desiredHeight * (2.5 / 3.5)); // 3.5 x 2.5 card ratio
+  const marginRight = cardOverlap ? `-${cardOverlap}px` : undefined;
+
+  return {
+    width: `${width}px`,
+    height: `${desiredHeight}px`,
+    marginRight,
+  };
+};

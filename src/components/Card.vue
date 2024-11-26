@@ -1,7 +1,5 @@
 <style scoped>
 .card {
-  /* 3.5 x 2.5 card ratio */
-  height: 300px;
   border-radius: 10px;
   /* TODO: Background content/image instead */
   background-color: rgb(237, 167, 98);
@@ -16,37 +14,53 @@
 .card:hover {
   bottom: 100px;
 }
+
+.card-clickable {
+  cursor: pointer;
+}
+
+.card-animating {
+  bottom: 800px !important;
+}
 </style>
 
 <script setup>
-import { defineProps, ref } from "vue";
-import { CARD_OVERLAP, CARD_WIDTH } from "../helpers/card";
+import { defineProps, ref, watchEffect } from "vue";
+import { getCardDimensions } from "../helpers/card";
 
-const { onClick, disabled } = defineProps({
+const { onClick, isClickable, isClicked } = defineProps({
+  isClicked: Boolean,
   isClickable: Boolean,
   card: String, // stringified svg
   onClick: Function,
-  disabled: Boolean,
 });
 
 // Clicked and pending closure
 const isAnimating = ref(false);
-const triggerCardAnimation = () => isAnimating.value = true;
+
+const cardClass = ref(["card"]);
+
+watchEffect(() => {
+  cardClass.value = ["card"];
+
+  if (isAnimating.value || isClicked)
+    cardClass.value.push("card-animating");
+
+  if (isClickable)
+    cardClass.value.push("card-clickable");
+});
 
 const handleCardClick = () => {
-  if (disabled) return;
+  if (!isClickable) return;
   onClick();
-  triggerCardAnimation();
+  isAnimating.value = true;
 }
 </script>
 
 
 <template>
-  <div class="card" :style="{
-    width: `${CARD_WIDTH}px`,
-    marginRight: `-${CARD_OVERLAP}px`,
-    cursor: isClickable ? `pointer` : `default`,
-    ...(isAnimating ? { bottom: `800px !important` } : {})
+  <div :class="cardClass" :style="{
+    ...getCardDimensions(300, 100),
   }" v-html="card" @click="handleCardClick">
   </div>
 </template>

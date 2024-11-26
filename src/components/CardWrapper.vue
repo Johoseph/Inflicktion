@@ -28,18 +28,18 @@
   }
 }
 
-.card-wrapper-left {
+.slide-wrapper-left {
   animation: 300ms wrapper-slide-left ease-out;
 }
 
 
-.card-wrapper-right {
+.slide-wrapper-right {
   animation: 300ms wrapper-slide-right ease-out;
 }
 </style>
 
 <script setup>
-import { onBeforeMount, onUnmounted, ref, useTemplateRef } from "vue"
+import { onBeforeMount, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
 import Card from "./Card.vue"
 import cardConfig from "../helpers/card.config.json"
 
@@ -50,19 +50,22 @@ const { hasCardBeenClicked, setHasCardBeenClicked, setHasCardClickSettled } = de
 })
 
 // the first argument must match the ref value in the template
-const cardWrapperDiv = useTemplateRef('cardWrapper')
+const cardWrapperLeftHTML = useTemplateRef('cardWrapperLeftHTML')
+const cardWrapperRightHTML = useTemplateRef('cardWrapperRightHTML')
 const cardWrapperLeft = ref(0);
 
 const cardsLeftConfig = ref(cardConfig);
 const cardsRightConfig = ref([]);
+const currentClickedCard = ref();
 
 let timeout;
 
 /**
  * On click, card animates up then removed from the DOM after
  */
-const handleCardClick = (clickedCardIndex) => {
+const handleCardClick = (card, clickedCardIndex) => {
   setHasCardBeenClicked(true);
+  currentClickedCard.value = card;
 
   // After animation, we are slicing this from the config
   timeout = setTimeout(() => {
@@ -74,7 +77,7 @@ const handleCardClick = (clickedCardIndex) => {
 
     cardsLeftConfig.value = cardsLeft;
     cardsRightConfig.value = cardsRight;
-    cardWrapperDiv.value.classList.add("card-wrapper-left");
+    cardWrapperLeftHTML.value.classList.add("slide-wrapper-left");
   }, 300);
 }
 
@@ -87,6 +90,28 @@ const handleMouseMove = (e) => {
   cardWrapperLeft.value = -(mouseCenterDelta / 2);
 }
 
+watchEffect(() => {
+  if (!hasCardBeenClicked && currentClickedCard.value !== undefined) {
+    cardWrapperLeftHTML.value.classList.remove("slide-wrapper-left");
+    cardWrapperLeftHTML.value.classList.add("slide-wrapper-right");
+
+    cardWrapperRightHTML.value.classList.remove("slide-wrapper-right");
+    cardWrapperRightHTML.value.classList.add("slide-wrapper-left");
+
+    // Reset config to base
+    cardsLeftConfig.value.push(cardConfig.find((card) => card === currentClickedCard.value));
+
+    // On timeout, reset config to base
+    setTimeout(() => {
+      cardsLeftConfig.value = cardConfig;
+      cardsRightConfig.value = [];
+      currentClickedCard.value = undefined;
+
+      cardWrapperLeftHTML.value.classList.remove("slide-wrapper-right");
+    }, 600)
+  }
+})
+
 onBeforeMount(() => {
   window.addEventListener("mousemove", handleMouseMove);
 })
@@ -98,16 +123,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="card-wrapper" ref="cardWrapper" :style="{
+  <div class="card-wrapper" ref="cardWrapperLeftHTML" :style="{
     left: `${cardWrapperLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsLeftConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(cardIndex)" :disabled="hasCardBeenClicked" />
+      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!hasCardBeenClicked"
+      :isClicked="currentClickedCard === card" />
   </div>
-  <div class="card-wrapper card-wrapper-right" v-if="cardsRightConfig.length > 0" :style="{
+  <div class="card-wrapper slide-wrapper-right" ref="cardWrapperRightHTML" v-if="cardsRightConfig.length > 0" :style="{
     left: `${cardWrapperLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsRightConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(cardIndex)" :disabled="hasCardBeenClicked" />
+      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!hasCardBeenClicked" />
   </div>
 </template>
