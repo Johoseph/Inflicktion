@@ -15,9 +15,17 @@ import CardWrapper from "./components/CardWrapper.vue";
 const hasCardBeenClicked = ref(false);
 const hasCardClickSettled = ref(false);
 
+const setHasCardBeenClicked = (hasBeenClicked) => {
+  hasCardBeenClicked.value = hasBeenClicked;
+}
+
+const setHasCardClickSettled = (hasSettled) => {
+  hasCardClickSettled.value = hasSettled;
+}
+
 </script>
 
 <template>
-  <CardWrapper :hasCardBeenClicked />
+  <CardWrapper :hasCardBeenClicked :setHasCardBeenClicked :setHasCardClickSettled />
   <div class="overlay"></div>
 </template>

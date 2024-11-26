@@ -43,8 +43,10 @@ import { onBeforeMount, onUnmounted, ref, useTemplateRef } from "vue"
 import Card from "./Card.vue"
 import cardConfig from "../helpers/card.config.json"
 
-defineProps({
+const { hasCardBeenClicked, setHasCardBeenClicked, setHasCardClickSettled } = defineProps({
   hasCardBeenClicked: Boolean,
+  setHasCardBeenClicked: Function,
+  setHasCardClickSettled: Function
 })
 
 // the first argument must match the ref value in the template
@@ -60,8 +62,12 @@ let timeout;
  * On click, card animates up then removed from the DOM after
  */
 const handleCardClick = (clickedCardIndex) => {
+  setHasCardBeenClicked(true);
+
   // After animation, we are slicing this from the config
   timeout = setTimeout(() => {
+    setHasCardClickSettled(true);
+
     // After animation, split cards on either side into 2 divs to allow slide animation
     const cardsLeft = cardConfig.slice(0, clickedCardIndex);
     const cardsRight = cardConfig.slice(clickedCardIndex + 1);
@@ -96,12 +102,12 @@ onUnmounted(() => {
     left: `${cardWrapperLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsLeftConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(cardIndex)" />
+      :onClick="() => handleCardClick(cardIndex)" :disabled="hasCardBeenClicked" />
   </div>
   <div class="card-wrapper card-wrapper-right" v-if="cardsRightConfig.length > 0" :style="{
     left: `${cardWrapperLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsRightConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(cardIndex)" />
+      :onClick="() => handleCardClick(cardIndex)" :disabled="hasCardBeenClicked" />
   </div>
 </template>

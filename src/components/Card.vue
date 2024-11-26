@@ -22,10 +22,11 @@
 import { defineProps, ref } from "vue";
 import { CARD_OVERLAP, CARD_WIDTH } from "../helpers/card";
 
-const { onClick } = defineProps({
+const { onClick, disabled } = defineProps({
   isClickable: Boolean,
   card: String, // stringified svg
   onClick: Function,
+  disabled: Boolean,
 });
 
 // Clicked and pending closure
@@ -33,6 +34,7 @@ const isAnimating = ref(false);
 const triggerCardAnimation = () => isAnimating.value = true;
 
 const handleCardClick = () => {
+  if (disabled) return;
   onClick();
   triggerCardAnimation();
 }
