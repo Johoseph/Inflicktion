@@ -42,10 +42,10 @@
 import { onBeforeMount, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
 import Card from "./Card.vue"
 
-const { cardConfig, hasCardBeenClicked, setHasCardBeenClicked, setHasCardClickSettled } = defineProps({
+const { cardConfig, currentClickedCard, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
   cardConfig: Object,
-  hasCardBeenClicked: Boolean,
-  setHasCardBeenClicked: Function,
+  currentClickedCard: Object,
+  setCurrentClickedCard: Function,
   setHasCardClickSettled: Function
 })
 
@@ -57,7 +57,7 @@ const cardWrapperPositionLeft = ref(0);
 // Refs for CardWrapper content
 const cardsLeftConfig = ref(cardConfig);
 const cardsRightConfig = ref([]);
-const currentClickedCard = ref();
+const wrapperClickedCard = ref(currentClickedCard);
 
 let timeout;
 
@@ -65,8 +65,8 @@ let timeout;
  * On click, card animates up then removed from the DOM after
  */
 const handleCardClick = (card, clickedCardIndex) => {
-  setHasCardBeenClicked(true);
-  currentClickedCard.value = card;
+  setCurrentClickedCard(card);
+  wrapperClickedCard.value = card;
 
   // After animation, we are slicing this from the config
   timeout = setTimeout(() => {
@@ -91,7 +91,7 @@ const handleMouseMove = (e) => {
 }
 
 watchEffect(() => {
-  if (!hasCardBeenClicked && currentClickedCard.value !== undefined) {
+  if (wrapperClickedCard.value && !currentClickedCard) {
     // Reverse classes to animate backwards
     cardWrapperLeftHTML.value.classList.remove("slide-wrapper-left");
     cardWrapperLeftHTML.value.classList.add("slide-wrapper-right");
@@ -100,13 +100,15 @@ watchEffect(() => {
     cardWrapperRightHTML.value.classList.add("slide-wrapper-left");
 
     // Pust current clicked card back into config
-    cardsLeftConfig.value.push(cardConfig.find((card) => card === currentClickedCard.value));
+    cardsLeftConfig.value.push(
+      cardConfig.find((card) => card.svg === wrapperClickedCard.value.svg)
+    );
 
     // On delay, reset config to base for next click
     setTimeout(() => {
       cardsLeftConfig.value = cardConfig;
       cardsRightConfig.value = [];
-      currentClickedCard.value = undefined;
+      wrapperClickedCard.value = undefined;
 
       cardWrapperLeftHTML.value.classList.remove("slide-wrapper-right");
     }, 600)
@@ -128,13 +130,13 @@ onUnmounted(() => {
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsLeftConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!hasCardBeenClicked"
-      :isClicked="currentClickedCard === card" />
+      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!wrapperClickedCard"
+      :isClicked="wrapperClickedCard?.svg === card.svg" />
   </div>
   <div class="card-wrapper slide-wrapper-right" ref="cardWrapperRightHTML" v-if="cardsRightConfig.length > 0" :style="{
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsRightConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!hasCardBeenClicked" />
+      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!wrapperClickedCard" />
   </div>
 </template>

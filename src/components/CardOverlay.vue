@@ -43,10 +43,10 @@ import { getCardDimensions } from '../helpers/card';
 const isAnimating = ref(false);
 const isLoaded = ref(false);
 
-const { hasCardClickSettled, setHasCardBeenClicked, setHasCardClickSettled } = defineProps({
-  hasCardBeenClicked: Boolean,
+const { hasCardClickSettled, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
+  currentClickedCard: Object,
   hasCardClickSettled: Boolean,
-  setHasCardBeenClicked: Function,
+  setCurrentClickedCard: Function,
   setHasCardClickSettled: Function
 })
 
@@ -65,7 +65,7 @@ const handleClose = () => {
   if (isAnimating.value) return;
 
   isLoaded.value = false;
-  setHasCardBeenClicked(false);
+  setCurrentClickedCard(undefined);
   setHasCardClickSettled(false);
 }
 
@@ -73,7 +73,7 @@ onUnmounted(() => clearTimeout(timeout));
 </script>
 
 <template>
-  <div class="overlay" :class="hasCardBeenClicked ? `overlay-clicked` : `overlay-static`" @click="handleClose">
+  <div class="overlay" :class="currentClickedCard ? `overlay-clicked` : `overlay-static`" @click="handleClose">
     <div class="card card-front" :class="isLoaded ? `card-loaded` : ``" :style="{
       ...getCardDimensions(450)
     }">

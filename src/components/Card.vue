@@ -25,7 +25,7 @@
 </style>
 
 <script setup>
-import { defineProps, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { getCardDimensions } from "../helpers/card";
 
 const { onClick, isClickable, isClicked } = defineProps({

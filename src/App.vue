@@ -5,7 +5,7 @@ import CardOverlay from "./components/CardOverlay.vue";
 import LightOverlay from "./components/LightOverlay.vue";
 import defaultCardConfig from "./helpers/card.config.json"
 
-const hasCardBeenClicked = ref(false);
+const currentClickedCard = ref();
 const hasCardClickSettled = ref(false);
 
 const getStoredCardConfig = () => JSON.parse(localStorage.getItem("cardConfig") || null);
@@ -17,8 +17,8 @@ if (!existingCardConfig) setStoredCardConfig(defaultCardConfig);
 
 const cardConfig = reactive(getStoredCardConfig())
 
-const setHasCardBeenClicked = (hasBeenClicked) => {
-  hasCardBeenClicked.value = hasBeenClicked;
+const setCurrentClickedCard = (clickedCard) => {
+  currentClickedCard.value = clickedCard;
 }
 
 const setHasCardClickSettled = (hasSettled) => {
@@ -27,7 +27,7 @@ const setHasCardClickSettled = (hasSettled) => {
 </script>
 
 <template>
-  <CardWrapper :cardConfig :hasCardBeenClicked :setHasCardBeenClicked :setHasCardClickSettled />
+  <CardWrapper :cardConfig :currentClickedCard :setCurrentClickedCard :setHasCardClickSettled />
   <LightOverlay />
-  <CardOverlay :hasCardBeenClicked :hasCardClickSettled :setHasCardBeenClicked :setHasCardClickSettled />
+  <CardOverlay :currentClickedCard :hasCardClickSettled :setCurrentClickedCard :setHasCardClickSettled />
 </template>
