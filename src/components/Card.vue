@@ -25,33 +25,41 @@
 </style>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { CARD_BACK, getCardDimensions } from "../helpers/card";
 
-const { onClick, isClickable, isClicked } = defineProps({
-  isClicked: Boolean,
-  isClickable: Boolean,
-  card: Object, // { svg: string, day: number } should have just used ts lol
+const { card, onClick, clickedCard, newCardClickAllowed } = defineProps({
+  card: Object,
   onClick: Function,
+  clickedCard: Object,
+  newCardClickAllowed: Boolean,
 });
 
 // Clicked and pending closure
 const isAnimating = ref(false);
-
 const cardClass = ref(["card"]);
+
+const isClicked = computed(() => clickedCard?.svg === card.svg);
+const isClickable = computed(() => {
+  return !clickedCard // no card is currently clicked
+    && (
+      card.day || // card has been clicked before
+      newCardClickAllowed // or new cards can be clicked
+    );
+});
 
 watchEffect(() => {
   cardClass.value = ["card"];
 
-  if (isAnimating.value || isClicked)
+  if (isAnimating.value || isClicked.value)
     cardClass.value.push("card-animating");
 
-  if (isClickable)
+  if (isClickable.value)
     cardClass.value.push("card-clickable");
 });
 
 const handleCardClick = () => {
-  if (!isClickable) return;
+  if (!isClickable.value) return;
   onClick();
   isAnimating.value = true;
 }

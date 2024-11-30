@@ -65,7 +65,7 @@
 </style>
 
 <script setup>
-import { onUnmounted, ref, useTemplateRef, watchEffect } from 'vue';
+import { computed, onUnmounted, ref, useTemplateRef, watchEffect } from 'vue';
 import { CARD_BACK, getCardDimensions } from '../helpers/card';
 
 const classTimeoutDelayMs = 500;
@@ -87,7 +87,7 @@ let animateTimeout;
 let classTimeout;
 
 // Store a local ref of the clicked card for animation purposes
-let localClickedCard = ref(currentClickedCard);
+let localClickedCard = computed((prev) => currentClickedCard ? currentClickedCard : prev);
 
 const handleCardSkew = (mouseEvent) => {
   const verticalCenter = document.body.clientHeight / 2;
@@ -115,13 +115,7 @@ const handleClose = () => {
   cardHTML.value.style.transform = "";
 
   clearCurrentClickedCard();
-  setTimeout(() => localClickedCard.value = undefined, slideTimeoutMs);
 }
-
-// Keep local in-line for new truthy values
-watchEffect(() => {
-  if (currentClickedCard) localClickedCard.value = currentClickedCard;
-})
 
 watchEffect(() => {
   const cardWillFlip = !currentClickedCard?.day;

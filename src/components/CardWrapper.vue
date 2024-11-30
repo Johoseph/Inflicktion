@@ -39,8 +39,9 @@
 </style>
 
 <script setup>
-import { onBeforeMount, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
+import { computed, onBeforeMount, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
 import Card from "./Card.vue"
+import { noOfClickableCards } from "../helpers/date"
 
 const { cardConfig, currentClickedCard, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
   cardConfig: Object,
@@ -58,6 +59,8 @@ const cardWrapperPositionLeft = ref(0);
 const cardsLeftConfig = ref(cardConfig);
 const cardsRightConfig = ref([]);
 const wrapperClickedCard = ref(currentClickedCard);
+// Number of cards clickable raw by days, subtract how many cards we have already clicked
+const newCardClickAllowed = computed(() => (noOfClickableCards - cardConfig.filter((card) => card.day).length) > 0);
 
 let timeout;
 
@@ -130,13 +133,13 @@ onUnmounted(() => {
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsLeftConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!wrapperClickedCard"
-      :isClicked="wrapperClickedCard?.svg === card.svg" />
+      :onClick="() => handleCardClick(card, cardIndex)" :clickedCard="wrapperClickedCard"
+      :newCardClickAllowed="newCardClickAllowed" />
   </div>
   <div class="card-wrapper slide-wrapper-right" ref="cardWrapperRightHTML" v-if="cardsRightConfig.length > 0" :style="{
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsRightConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(card, cardIndex)" :isClickable="!wrapperClickedCard" />
+      :onClick="() => handleCardClick(card, cardIndex)" :clickedCard="wrapperClickedCard" />
   </div>
 </template>
