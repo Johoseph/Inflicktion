@@ -68,22 +68,26 @@
 import { onUnmounted, ref, useTemplateRef, watchEffect } from 'vue';
 import { CARD_BACK, getCardDimensions } from '../helpers/card';
 
+const classTimeoutDelayMs = 500;
+const classTimeoutMs = 2000;
+const slideTimeoutMs = 600;
+
 const isAnimating = ref(false);
 const isLoaded = ref(false);
 const cardHTML = useTemplateRef("cardHTML");
 
-const { currentClickedCard, hasCardClickSettled, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
+const { currentClickedCard, hasCardClickSettled, clearCurrentClickedCard, updateCardConfig } = defineProps({
   currentClickedCard: Object,
   hasCardClickSettled: Boolean,
-  setCurrentClickedCard: Function,
-  setHasCardClickSettled: Function
+  clearCurrentClickedCard: Function,
+  updateCardConfig: Function,
 })
 
 let animateTimeout;
 let classTimeout;
 
-const cardWillFlip = !currentClickedCard || !currentClickedCard.day;
-const initCardClass = ["card", cardWillFlip ? "card-back" : "card-front"];
+// Store a local ref of the clicked card for animation purposes
+let localClickedCard = ref(currentClickedCard);
 
 const handleCardSkew = (mouseEvent) => {
   const verticalCenter = document.body.clientHeight / 2;
@@ -110,15 +114,17 @@ const handleClose = () => {
   window.removeEventListener("mousemove", handleCardSkew);
   cardHTML.value.style.transform = "";
 
-
-  setCurrentClickedCard(undefined);
-  setHasCardClickSettled(false);
+  clearCurrentClickedCard();
+  setTimeout(() => localClickedCard.value = undefined, slideTimeoutMs);
 }
 
+// Keep local in-line for new truthy values
 watchEffect(() => {
-  const classTimeoutDelayMs = 500;
-  const classTimeoutMs = 2000;
-  const slideTimeoutMs = 600;
+  if (currentClickedCard) localClickedCard.value = currentClickedCard;
+})
+
+watchEffect(() => {
+  const cardWillFlip = !currentClickedCard?.day;
   const animationTimeoutMs = slideTimeoutMs + (cardWillFlip ? classTimeoutMs + classTimeoutDelayMs : 0);
 
   if (hasCardClickSettled) {
@@ -131,9 +137,11 @@ watchEffect(() => {
       classTimeout = setTimeout(() => {
         cardHTML.value.classList.add("card-rotate-out");
 
+        // flip to front of card half-way through the timeout
         classTimeout = setTimeout(() => {
           cardHTML.value.classList.remove("card-rotate-out");
           cardHTML.value.classList.add("card-rotate-in");
+          updateCardConfig();
         }, classTimeoutMs / 2)
       }, classTimeoutDelayMs)
     }
@@ -155,9 +163,9 @@ onUnmounted(() => {
 
 <template>
   <div class="overlay" :class="currentClickedCard ? `overlay-clicked` : `overlay-static`" @click="handleClose">
-    <div ref="cardHTML" :class="initCardClass" :style="{
+    <div ref="cardHTML" class="card" :style="{
       ...getCardDimensions(450)
-    }" v-html="cardWillFlip ? CARD_BACK : currentClickedCard.svg">
+    }" v-html="!localClickedCard?.day ? CARD_BACK : localClickedCard.svg">
     </div>
   </div>
 </template>
