@@ -26,7 +26,7 @@
 
 <script setup>
 import { ref, watchEffect } from "vue";
-import { getCardDimensions } from "../helpers/card";
+import { CARD_BACK, getCardDimensions } from "../helpers/card";
 
 const { onClick, isClickable, isClicked } = defineProps({
   isClicked: Boolean,
@@ -61,6 +61,6 @@ const handleCardClick = () => {
 <template>
   <div :class="cardClass" :style="{
     ...getCardDimensions(300, 100),
-  }" v-html="card.svg" @click="handleCardClick">
+  }" v-html="card.day ? card.svg : CARD_BACK" @click="handleCardClick">
   </div>
 </template>

@@ -34,30 +34,84 @@
 .card-loaded {
   bottom: 0px;
 }
+
+.card-rotate-out {
+  animation: 1s rotate-card-out ease-in;
+}
+
+.card-rotate-in {
+  animation: 1s rotate-card-in ease-out;
+}
+
+@keyframes rotate-card-out {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(90deg);
+  }
+}
+
+@keyframes rotate-card-in {
+  from {
+    transform: rotateY(-90deg);
+  }
+
+  to {
+    transform: rotateY(0deg);
+  }
+}
 </style>
 
 <script setup>
-import { onUnmounted, ref, watchEffect } from 'vue';
-import { getCardDimensions } from '../helpers/card';
+import { onUnmounted, ref, useTemplateRef, watchEffect } from 'vue';
+import { CARD_BACK, getCardDimensions } from '../helpers/card';
 
 const isAnimating = ref(false);
 const isLoaded = ref(false);
+const cardHTML = useTemplateRef("cardHTML");
 
-const { hasCardClickSettled, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
+const { currentClickedCard, hasCardClickSettled, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
   currentClickedCard: Object,
   hasCardClickSettled: Boolean,
   setCurrentClickedCard: Function,
   setHasCardClickSettled: Function
 })
 
-let timeout;
+let animateTimeout;
+let classTimeout;
+
+const cardWillFlip = !currentClickedCard || !currentClickedCard.day;
+const initCardClass = ["card", cardWillFlip ? "card-back" : "card-front"];
 
 watchEffect(() => {
+  const classTimeoutDelayMs = 500;
+  const classTimeoutMs = 2000;
+  const slideTimeoutMs = 600;
+  const animationTimeoutMs = slideTimeoutMs + (cardWillFlip ? classTimeoutMs + classTimeoutDelayMs : 0);
+
   if (hasCardClickSettled) {
     isAnimating.value = true;
     isLoaded.value = true;
 
-    timeout = setTimeout(() => isAnimating.value = false, 1000) // TODO: This timeout will be calced based on whether a flip is req'd
+    cardHTML.value.classList.add("card-loaded");
+
+    if (cardWillFlip) {
+      classTimeout = setTimeout(() => {
+        cardHTML.value.classList.add("card-rotate-out");
+
+        classTimeout = setTimeout(() => {
+          cardHTML.value.classList.remove("card-rotate-out");
+          cardHTML.value.classList.add("card-rotate-in");
+        }, classTimeoutMs / 2)
+      }, classTimeoutDelayMs)
+    }
+
+    animateTimeout = setTimeout(() => {
+      isAnimating.value = false;
+      cardHTML.value.classList.remove("card-rotate-in");
+    }, animationTimeoutMs);
   }
 })
 
@@ -65,21 +119,22 @@ const handleClose = () => {
   if (isAnimating.value) return;
 
   isLoaded.value = false;
+  cardHTML.value.classList.remove("card-loaded");
   setCurrentClickedCard(undefined);
   setHasCardClickSettled(false);
 }
 
-onUnmounted(() => clearTimeout(timeout));
+onUnmounted(() => {
+  clearTimeout(animateTimeout);
+  clearTimeout(classTimeout);
+});
 </script>
 
 <template>
   <div class="overlay" :class="currentClickedCard ? `overlay-clicked` : `overlay-static`" @click="handleClose">
-    <div class="card card-front" :class="isLoaded ? `card-loaded` : ``" :style="{
+    <div ref="cardHTML" :class="initCardClass" :style="{
       ...getCardDimensions(450)
-    }">
+    }" v-html="cardWillFlip ? CARD_BACK : currentClickedCard.svg">
     </div>
-    <!-- <div class="card card-back" :style="{
-      ...getCardDimensions(450)
-    }" v-if="true"></div> TODO: Back will be conditional once selected -->
   </div>
 </template>
