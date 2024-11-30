@@ -8,7 +8,7 @@
 
   position: relative;
   bottom: 0px;
-  transition: bottom ease-out 300ms;
+  transition: bottom ease-out 300ms, margin-right ease-out 300ms;
 }
 
 .card:hover {
@@ -33,6 +33,7 @@ const { card, onClick, clickedCard, newCardClickAllowed } = defineProps({
   onClick: Function,
   clickedCard: Object,
   newCardClickAllowed: Boolean,
+  areCardsCompressed: Boolean,
 });
 
 // Clicked and pending closure
@@ -68,7 +69,7 @@ const handleCardClick = () => {
 
 <template>
   <div :class="cardClass" :style="{
-    ...getCardDimensions(300, 100),
+    ...getCardDimensions(300, areCardsCompressed ? 150 : 100),
   }" v-html="card.day ? card.svg : CARD_BACK" @click="handleCardClick">
   </div>
 </template>

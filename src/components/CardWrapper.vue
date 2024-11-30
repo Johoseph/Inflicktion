@@ -47,7 +47,8 @@ const { cardConfig, currentClickedCard, setCurrentClickedCard, setHasCardClickSe
   cardConfig: Object,
   currentClickedCard: Object,
   setCurrentClickedCard: Function,
-  setHasCardClickSettled: Function
+  setHasCardClickSettled: Function,
+  areCardsCompressed: Boolean
 })
 
 // Refs for CardWrapper styling
@@ -133,13 +134,13 @@ onUnmounted(() => {
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsLeftConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(cardIndex)" :clickedCard="wrapperClickedCard"
+      :onClick="() => handleCardClick(cardIndex)" :areCardsCompressed :clickedCard="wrapperClickedCard"
       :newCardClickAllowed="newCardClickAllowed" />
   </div>
   <div class="card-wrapper slide-wrapper-right" ref="cardWrapperRightHTML" v-if="cardsRightConfig.length > 0" :style="{
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsRightConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(cardIndex)" :clickedCard="wrapperClickedCard" />
+      :onClick="() => handleCardClick(cardIndex)" :areCardsCompressed :clickedCard="wrapperClickedCard" />
   </div>
 </template>

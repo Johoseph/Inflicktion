@@ -5,9 +5,11 @@ import CardOverlay from "./components/CardOverlay.vue";
 import LightOverlay from "./components/LightOverlay.vue";
 import cards from "./helpers/card.config.json"
 import { day } from "./helpers/date";
+import CompressToggle from "./components/CompressToggle.vue";
 
 const currentClickedCard = ref();
 const hasCardClickSettled = ref(false);
+const areCardsCompressed = ref(true);
 
 const getStoredCardConfig = () => JSON.parse(localStorage.getItem("cardConfig") || null);
 const setStoredCardConfig = (newConfig) => localStorage.setItem("cardConfig", JSON.stringify(newConfig));
@@ -61,7 +63,8 @@ const updateCardConfig = () => {
 </script>
 
 <template>
-  <CardWrapper :cardConfig :currentClickedCard :setCurrentClickedCard :setHasCardClickSettled />
+  <CardWrapper :cardConfig :currentClickedCard :setCurrentClickedCard :setHasCardClickSettled :areCardsCompressed />
   <LightOverlay />
+  <CompressToggle @click="areCardsCompressed = !areCardsCompressed" :areCardsCompressed />
   <CardOverlay :currentClickedCard :hasCardClickSettled :clearCurrentClickedCard :updateCardConfig />
 </template>
