@@ -41,9 +41,9 @@
 <script setup>
 import { onBeforeMount, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
 import Card from "./Card.vue"
-import cardConfig from "../helpers/card.config.json"
 
-const { hasCardBeenClicked, setHasCardBeenClicked, setHasCardClickSettled } = defineProps({
+const { cardConfig, hasCardBeenClicked, setHasCardBeenClicked, setHasCardClickSettled } = defineProps({
+  cardConfig: Object,
   hasCardBeenClicked: Boolean,
   setHasCardBeenClicked: Function,
   setHasCardClickSettled: Function

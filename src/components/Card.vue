@@ -31,7 +31,7 @@ import { getCardDimensions } from "../helpers/card";
 const { onClick, isClickable, isClicked } = defineProps({
   isClicked: Boolean,
   isClickable: Boolean,
-  card: String, // stringified svg
+  card: Object, // { svg: string, day: number } should have just used ts lol
   onClick: Function,
 });
 
@@ -61,6 +61,6 @@ const handleCardClick = () => {
 <template>
   <div :class="cardClass" :style="{
     ...getCardDimensions(300, 100),
-  }" v-html="card" @click="handleCardClick">
+  }" v-html="card.svg" @click="handleCardClick">
   </div>
 </template>
