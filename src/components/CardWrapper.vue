@@ -67,8 +67,8 @@ let timeout;
 /**
  * On click, card animates up then removed from the DOM after
  */
-const handleCardClick = (card, clickedCardIndex) => {
-  setCurrentClickedCard(card);
+const handleCardClick = (clickedCardIndex) => {
+  const card = setCurrentClickedCard(clickedCardIndex);
   wrapperClickedCard.value = card;
 
   // After animation, we are slicing this from the config
@@ -133,13 +133,13 @@ onUnmounted(() => {
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsLeftConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(card, cardIndex)" :clickedCard="wrapperClickedCard"
+      :onClick="() => handleCardClick(cardIndex)" :clickedCard="wrapperClickedCard"
       :newCardClickAllowed="newCardClickAllowed" />
   </div>
   <div class="card-wrapper slide-wrapper-right" ref="cardWrapperRightHTML" v-if="cardsRightConfig.length > 0" :style="{
     left: `${cardWrapperPositionLeft}px`,
   }">
     <Card v-for="(card, cardIndex) in cardsRightConfig" :key="card" :card="card"
-      :onClick="() => handleCardClick(card, cardIndex)" :clickedCard="wrapperClickedCard" />
+      :onClick="() => handleCardClick(cardIndex)" :clickedCard="wrapperClickedCard" />
   </div>
 </template>
