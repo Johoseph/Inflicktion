@@ -85,6 +85,36 @@ let classTimeout;
 const cardWillFlip = !currentClickedCard || !currentClickedCard.day;
 const initCardClass = ["card", cardWillFlip ? "card-back" : "card-front"];
 
+const handleCardSkew = (mouseEvent) => {
+  const verticalCenter = document.body.clientHeight / 2;
+  const horizontalCenter = document.body.clientWidth / 2;
+
+  const verticalFromCenter = mouseEvent.clientY > verticalCenter
+    ? mouseEvent.clientY - verticalCenter
+    : -(verticalCenter - mouseEvent.clientY);
+  const horizontalFromCenter = mouseEvent.clientX > horizontalCenter
+    ? mouseEvent.clientX - horizontalCenter
+    : -(horizontalCenter - mouseEvent.clientX);
+
+  const rotateX = (verticalFromCenter / 15).toFixed(2);
+  const rotateY = (horizontalFromCenter / 20).toFixed(2);
+
+  cardHTML.value.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+}
+
+const handleClose = () => {
+  if (isAnimating.value) return;
+
+  isLoaded.value = false;
+  cardHTML.value.classList.remove("card-loaded");
+  window.removeEventListener("mousemove", handleCardSkew);
+  cardHTML.value.style.transform = "";
+
+
+  setCurrentClickedCard(undefined);
+  setHasCardClickSettled(false);
+}
+
 watchEffect(() => {
   const classTimeoutDelayMs = 500;
   const classTimeoutMs = 2000;
@@ -111,22 +141,15 @@ watchEffect(() => {
     animateTimeout = setTimeout(() => {
       isAnimating.value = false;
       cardHTML.value.classList.remove("card-rotate-in");
+      window.addEventListener("mousemove", handleCardSkew);
     }, animationTimeoutMs);
   }
 })
 
-const handleClose = () => {
-  if (isAnimating.value) return;
-
-  isLoaded.value = false;
-  cardHTML.value.classList.remove("card-loaded");
-  setCurrentClickedCard(undefined);
-  setHasCardClickSettled(false);
-}
-
 onUnmounted(() => {
   clearTimeout(animateTimeout);
   clearTimeout(classTimeout);
+  window.removeEventListener("mousemove", handleCardSkew);
 });
 </script>
 
