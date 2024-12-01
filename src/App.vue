@@ -1,9 +1,8 @@
 <script setup>
-import { computed, reactive, ref } from "vue"
+import { reactive, ref } from "vue"
 import CardWrapper from "./components/CardWrapper.vue";
 import CardOverlay from "./components/CardOverlay.vue";
 import LightOverlay from "./components/LightOverlay.vue";
-import cards from "./helpers/card.config.json"
 import { day } from "./helpers/date";
 import CompressToggle from "./components/CompressToggle.vue";
 
@@ -16,24 +15,21 @@ const setStoredCardConfig = (newConfig) => localStorage.setItem("cardConfig", JS
 
 // Init
 const existingCardConfig = getStoredCardConfig();
-if (!existingCardConfig) setStoredCardConfig([...Array(24)].map(() => ({ svg: null })));
+if (!existingCardConfig) setStoredCardConfig([...Array(24)].map(() => ({ dayClicked: null })));
 
 const cardConfig = reactive(getStoredCardConfig());
-const svgCardCount = computed(() => cardConfig.filter((card) => card.svg).length);
 
 const setCurrentClickedCard = (cardIndex) => {
   const clickedCard = cardConfig[cardIndex];
 
   // If this card has a svg already, return
-  if (clickedCard.svg) {
+  if (clickedCard.isFlipped) {
     currentClickedCard.value = clickedCard;
     return clickedCard;
   }
 
-  // Otherwise pull next available svg, set to card and return
-  const nextSvg = cards[svgCardCount.value];
-
-  cardConfig[cardIndex].svg = nextSvg;
+  // Otherwise set day for dynamic image req.
+  cardConfig[cardIndex].dayClicked = day;
   setStoredCardConfig(cardConfig);
 
   const newClickedCard = cardConfig[cardIndex];
@@ -54,10 +50,10 @@ const setHasCardClickSettled = (hasSettled) => {
 const updateCardConfig = () => {
   if (!currentClickedCard.value) return;
 
-  const currentCardIndex = cardConfig.findIndex((card) => card.svg === currentClickedCard.value.svg);
+  const currentCardIndex = cardConfig.findIndex((card) => card.dayClicked === currentClickedCard.value.dayClicked);
 
-  currentClickedCard.value.day = day;
-  cardConfig[currentCardIndex].day = day;
+  currentClickedCard.value.isFlipped = true;
+  cardConfig[currentCardIndex].isFlipped = true;
   setStoredCardConfig(cardConfig);
 }
 </script>

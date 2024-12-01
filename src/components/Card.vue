@@ -38,14 +38,16 @@ const { card, onClick, clickedCard, newCardClickAllowed } = defineProps({
 const isAnimating = ref(false);
 const cardClass = ref(["card"]);
 
-const isClicked = computed(() => clickedCard?.svg === card.svg);
+const isClicked = computed(() => clickedCard?.dayClicked === card.dayClicked);
 const isClickable = computed(() => {
   return !clickedCard // no card is currently clicked
     && (
-      card.day || // card has been clicked before
+      card.isFlipped || // card has been clicked before
       newCardClickAllowed // or new cards can be clicked
     );
 });
+
+const src = computed(() => card.isFlipped ? new URL(`../assets/${card.dayClicked}/regular.png`, import.meta.url) : CARD_BACK);
 
 watchEffect(() => {
   cardClass.value = ["card"];
@@ -69,7 +71,6 @@ const handleCardClick = () => {
   <div :class="cardClass" :style="{
     ...getCardDimensions(300, areCardsCompressed ? 150 : 100),
   }" @click="handleCardClick">
-    <img :src="card.day ? card.svg : CARD_BACK">
-    </img>
+    <img :src="src"></img>
   </div>
 </template>

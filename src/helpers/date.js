@@ -9,4 +9,11 @@ const year = getYear(today);
 const currentDay = year > 2024 ? 24 : Math.min(day, 24);
 const isAdventOrFuture = year > 2024 || (year === 2024 && month === 11);
 
-export const noOfClickableCards = !isAdventOrFuture ? 0 : currentDay;
+// Use dynamic URL to check whether i have developed the next card
+const nextCardExists =
+  new URL(`../assets/${currentDay}/regular.png`, import.meta.url).pathname
+    .split("/")
+    .reverse()[0] !== "undefined";
+
+export const noOfClickableCards =
+  !isAdventOrFuture || !nextCardExists ? 0 : currentDay;

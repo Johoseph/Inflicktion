@@ -61,7 +61,7 @@ const cardsLeftConfig = ref(cardConfig);
 const cardsRightConfig = ref([]);
 const wrapperClickedCard = ref(currentClickedCard);
 // Number of cards clickable raw by days, subtract how many cards we have already clicked
-const newCardClickAllowed = computed(() => (noOfClickableCards - cardConfig.filter((card) => card.day).length) > 0);
+const newCardClickAllowed = computed(() => (noOfClickableCards - cardConfig.filter((card) => card.isFlipped).length) > 0);
 
 let timeout;
 
@@ -105,7 +105,7 @@ watchEffect(() => {
 
     // Pust current clicked card back into config
     cardsLeftConfig.value.push(
-      cardConfig.find((card) => card.svg === wrapperClickedCard.value.svg)
+      cardConfig.find((card) => card.dayClicked === wrapperClickedCard.value.dayClicked)
     );
 
     // On delay, reset config to base for next click

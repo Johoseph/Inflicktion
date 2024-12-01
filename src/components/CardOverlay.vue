@@ -87,6 +87,8 @@ let classTimeout;
 // Store a local ref of the clicked card for animation purposes
 let localClickedCard = computed((prev) => currentClickedCard ? currentClickedCard : prev);
 
+const src = computed(() => localClickedCard?.isFlipped ? new URL(`../assets/${localClickedCard.dayClicked}/large.png`, import.meta.url) : CARD_BACK);
+
 const handleCardSkew = (mouseEvent) => {
   const verticalCenter = document.body.clientHeight / 2;
   const horizontalCenter = document.body.clientWidth / 2;
@@ -116,7 +118,7 @@ const handleClose = () => {
 }
 
 watchEffect(() => {
-  const cardWillFlip = !currentClickedCard?.day;
+  const cardWillFlip = !currentClickedCard?.isFlipped;
   const animationTimeoutMs = slideTimeoutMs + (cardWillFlip ? classTimeoutMs + classTimeoutDelayMs : 0);
 
   if (hasCardClickSettled) {
@@ -158,7 +160,7 @@ onUnmounted(() => {
     <div ref="cardHTML" class="card" :style="{
       ...getCardDimensions(450)
     }">
-      <img :src="!localClickedCard?.day ? CARD_BACK : localClickedCard.svg"></img>
+      <img :src="src"></img>
     </div>
   </div>
 </template>
