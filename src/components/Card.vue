@@ -1,9 +1,6 @@
 <style scoped>
 .card {
   border-radius: 10px;
-  /* TODO: Background content/image instead */
-  background-color: rgb(237, 167, 98);
-  border: 2px solid;
   box-shadow: -8px 1px 25px -1px rgba(0, 0, 0, 0.75);
 
   position: relative;
@@ -26,7 +23,8 @@
 
 <script setup>
 import { computed, ref, watchEffect } from "vue";
-import { CARD_BACK, getCardDimensions } from "../helpers/card";
+import { getCardDimensions } from "../helpers/card";
+import CARD_BACK from "../assets/card-back.png";
 
 const { card, onClick, clickedCard, newCardClickAllowed } = defineProps({
   card: Object,
@@ -70,6 +68,8 @@ const handleCardClick = () => {
 <template>
   <div :class="cardClass" :style="{
     ...getCardDimensions(300, areCardsCompressed ? 150 : 100),
-  }" v-html="card.day ? card.svg : CARD_BACK" @click="handleCardClick">
+  }" @click="handleCardClick">
+    <img :src="card.day ? card.svg : CARD_BACK">
+    </img>
   </div>
 </template>

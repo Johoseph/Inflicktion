@@ -21,9 +21,6 @@
 
 .card {
   border-radius: 10px;
-  /* TODO: Background content/image instead */
-  background-color: rgb(237, 167, 98);
-  border: 2px solid;
   box-shadow: -8px 1px 25px -1px rgba(0, 0, 0, 0.75);
 
   position: relative;
@@ -66,7 +63,8 @@
 
 <script setup>
 import { computed, onUnmounted, ref, useTemplateRef, watchEffect } from 'vue';
-import { CARD_BACK, getCardDimensions } from '../helpers/card';
+import { getCardDimensions } from '../helpers/card';
+import CARD_BACK from "../assets/card-back.large.png";
 
 const classTimeoutDelayMs = 500;
 const classTimeoutMs = 2000;
@@ -159,7 +157,8 @@ onUnmounted(() => {
   <div class="overlay" :class="currentClickedCard ? `overlay-clicked` : `overlay-static`" @click="handleClose">
     <div ref="cardHTML" class="card" :style="{
       ...getCardDimensions(450)
-    }" v-html="!localClickedCard?.day ? CARD_BACK : localClickedCard.svg">
+    }">
+      <img :src="!localClickedCard?.day ? CARD_BACK : localClickedCard.svg"></img>
     </div>
   </div>
 </template>
