@@ -87,7 +87,9 @@ let classTimeout;
 // Store a local ref of the clicked card for animation purposes
 let localClickedCard = computed((prev) => currentClickedCard ? currentClickedCard : prev);
 
-const src = computed(() => localClickedCard.value?.isFlipped ? new URL(`../assets/${localClickedCard.value.dayClicked}/large.png`, import.meta.url) : CARD_BACK);
+// `dayClicked` is set before `isFlipped`, so use this to preload the image resource before we actually want it
+const preloadSrc = computed(() => localClickedCard.value?.dayClicked ? new URL(`../assets/${localClickedCard.value.dayClicked}/large.png`, import.meta.url) : undefined);
+const src = computed(() => localClickedCard.value?.isFlipped ? preloadSrc.value : CARD_BACK);
 
 const handleCardSkew = (mouseEvent) => {
   const verticalCenter = document.body.clientHeight / 2;
@@ -161,6 +163,7 @@ onUnmounted(() => {
       ...getCardDimensions(450)
     }">
       <img :src="src"></img>
+      <img v-if="preloadSrc && !localClickedCard?.isFlipped" :src="preloadSrc" style="display: none"></img>
     </div>
   </div>
 </template>
