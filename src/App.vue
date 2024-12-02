@@ -3,7 +3,6 @@ import { reactive, ref } from "vue"
 import CardWrapper from "./components/CardWrapper.vue";
 import CardOverlay from "./components/CardOverlay.vue";
 import LightOverlay from "./components/LightOverlay.vue";
-import { day } from "./helpers/date";
 import CompressToggle from "./components/CompressToggle.vue";
 
 const currentClickedCard = ref();
@@ -29,7 +28,9 @@ const setCurrentClickedCard = (cardIndex) => {
   }
 
   // Otherwise set day for dynamic image req.
-  cardConfig[cardIndex].dayClicked = day;
+  const noCardsFlipped = cardConfig.filter((card) => card.isFlipped).length;
+
+  cardConfig[cardIndex].dayClicked = noCardsFlipped + 1;
   setStoredCardConfig(cardConfig);
 
   const newClickedCard = cardConfig[cardIndex];
