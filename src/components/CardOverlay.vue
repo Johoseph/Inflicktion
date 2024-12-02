@@ -87,7 +87,7 @@ let classTimeout;
 // Store a local ref of the clicked card for animation purposes
 let localClickedCard = computed((prev) => currentClickedCard ? currentClickedCard : prev);
 
-const src = computed(() => localClickedCard?.isFlipped ? new URL(`../assets/${localClickedCard.dayClicked}/large.png`, import.meta.url) : CARD_BACK);
+const src = computed(() => localClickedCard.value?.isFlipped ? new URL(`../assets/${localClickedCard.value.dayClicked}/large.png`, import.meta.url) : CARD_BACK);
 
 const handleCardSkew = (mouseEvent) => {
   const verticalCenter = document.body.clientHeight / 2;
