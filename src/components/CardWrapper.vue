@@ -99,8 +99,10 @@ watchEffect(() => {
     cardWrapperLeftHTML.value.classList.remove("slide-wrapper-left");
     cardWrapperLeftHTML.value.classList.add("slide-wrapper-right");
 
-    cardWrapperRightHTML.value.classList.remove("slide-wrapper-right");
-    cardWrapperRightHTML.value.classList.add("slide-wrapper-left");
+    if (cardWrapperRightHTML.value) {
+      cardWrapperRightHTML.value.classList.remove("slide-wrapper-right");
+      cardWrapperRightHTML.value.classList.add("slide-wrapper-left");
+    }
 
     // Pust current clicked card back into config
     cardsLeftConfig.value.push(
