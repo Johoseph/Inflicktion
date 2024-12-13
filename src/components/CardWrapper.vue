@@ -90,7 +90,6 @@ const handleMouseMove = (mouseEvent) => {
   const horizontalCenter = document.body.clientWidth / 2;
   const mouseCenterDelta = -(horizontalCenter - mouseEvent.clientX);
 
-  // TODO: '2' here may become a prop depending on 'collapsed' view
   cardWrapperPositionLeft.value = -(mouseCenterDelta / 2);
 }
 

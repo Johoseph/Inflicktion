@@ -25,7 +25,8 @@
 
   position: relative;
   transition: bottom ease-out 600ms;
-  bottom: 800px;
+  /* TODO: Zooming out breaks this effect */
+  bottom: 1000px;
 }
 
 .card-loaded {
