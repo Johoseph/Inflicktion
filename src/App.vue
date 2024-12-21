@@ -4,6 +4,7 @@ import CardWrapper from "./components/CardWrapper.vue";
 import CardOverlay from "./components/CardOverlay.vue";
 import LightOverlay from "./components/LightOverlay.vue";
 import CompressToggle from "./components/CompressToggle.vue";
+import Intro from "./components/Intro.vue";
 
 const currentClickedCard = ref();
 const hasCardClickSettled = ref(false);
@@ -64,4 +65,5 @@ const updateCardConfig = () => {
   <LightOverlay />
   <CompressToggle @click="areCardsCompressed = !areCardsCompressed" :areCardsCompressed />
   <CardOverlay :currentClickedCard :hasCardClickSettled :clearCurrentClickedCard :updateCardConfig />
+  <Intro />
 </template>
