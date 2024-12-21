@@ -28,16 +28,6 @@
   gap: 6em;
 }
 
-.letters-wrapper {
-  display: flex;
-  gap: 2em;
-}
-
-.letter {
-  position: relative;
-  height: 7em;
-}
-
 @keyframes opacity-in {
   from {
     opacity: 0;
@@ -51,8 +41,8 @@
 
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
-import IN from "./letters/IN.vue";
-import Continue from "./letters/Continue.vue";
+import Continue from "./Continue.vue";
+import Letters from "./Letters.vue";
 
 const INTRO_TIMEOUT_MS = 2400;
 const OUTRO_TIMEOUT_MS = 1200;
@@ -82,9 +72,7 @@ onUnmounted(() => clearTimeout(timeoutRef));
 <template>
   <div :class="backgroundClass" v-if="showIntro" @click="handleIntroClick">
     <div class="intro-overlay">
-      <div class="letters-wrapper">
-        <IN />
-      </div>
+      <Letters />
       <Continue :style="{
         visibility: !isIntroOutroComplete ? `hidden` : `unset` // visiblity rather than v-if to retain spacing
       }" />

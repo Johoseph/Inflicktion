@@ -4,7 +4,7 @@ import CardWrapper from "./components/CardWrapper.vue";
 import CardOverlay from "./components/CardOverlay.vue";
 import LightOverlay from "./components/LightOverlay.vue";
 import CompressToggle from "./components/CompressToggle.vue";
-import Intro from "./components/Intro.vue";
+import Intro from "./components/intro/Intro.vue";
 
 const currentClickedCard = ref();
 const hasCardClickSettled = ref(false);
