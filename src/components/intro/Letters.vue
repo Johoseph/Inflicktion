@@ -1,30 +1,12 @@
 <style scoped>
 .letters-wrapper {
   display: flex;
-  gap: 5px;
+  gap: 10px;
 }
 
 .letter {
   position: relative;
   height: 7em;
-
-  animation: 5s noise ease-in-out infinite alternate;
-
-}
-
-/* TODO: Figure out how to dynamically create this for each letter */
-@keyframes noise {
-  0% {
-    transform: translate(0px, 5px);
-  }
-
-  50% {
-    transform: translate(8px, 2px);
-  }
-
-  100% {
-    transform: translate(-5px, 6px);
-  }
 }
 </style>
 
@@ -33,11 +15,6 @@ import { onMounted } from "vue";
 import { LETTERS } from "./letters.config";
 
 const MAX_PIXEL_VARIATION = 8;
-
-const generateNoise = () => {
-  console.log("generating noise")
-  return '5s noise ease-in-out infinite alternate;'
-}
 
 const randomNoisePx = () => {
   const number = Math.round(Math.random() * MAX_PIXEL_VARIATION);
