@@ -13,14 +13,16 @@ const isAdventOrFuture = year > 2024 || (year === 2024 && month === 11);
 let pastAdventClickableCards = currentDay;
 
 for (let dayToCheck = currentDay; dayToCheck > 0; dayToCheck--) {
+  const cardToCheck = new URL(
+    `../assets/${dayToCheck}/regular.png`,
+    import.meta.url
+  );
+  new URL(`../assets/${dayToCheck}/large.png`, import.meta.url);
+
   const nextCardExists =
-    new URL(`../assets/${dayToCheck}/regular.png`, import.meta.url).pathname
-      .split("/")
-      .reverse()[0] !== "undefined";
+    cardToCheck.pathname.split("/").reverse()[0] !== "undefined";
 
-  if (nextCardExists) break;
-
-  pastAdventClickableCards--;
+  if (!nextCardExists) pastAdventClickableCards--;
 }
 
 export const noOfClickableCards = !isAdventOrFuture
