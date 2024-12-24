@@ -39,9 +39,10 @@
 </style>
 
 <script setup>
-import { computed, onBeforeMount, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
+import { computed, onBeforeMount, onMounted, onUnmounted, ref, useTemplateRef, watchEffect } from "vue"
 import Card from "./Card.vue"
 import { noOfClickableCards } from "../helpers/date"
+import { useCardWrapperPan } from "../composables/useCardWrapperPan";
 
 const { cardConfig, currentClickedCard, setCurrentClickedCard, setHasCardClickSettled } = defineProps({
   cardConfig: Object,
@@ -122,6 +123,10 @@ watchEffect(() => {
 
 onBeforeMount(() => {
   window.addEventListener("mousemove", handleMouseMove);
+})
+
+onMounted(() => {
+  useCardWrapperPan(cardWrapperLeftHTML.value);
 })
 
 onUnmounted(() => {

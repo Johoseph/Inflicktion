@@ -868,6 +868,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hammerjs@npm:^2.0.8":
+  version: 2.0.8
+  resolution: "hammerjs@npm:2.0.8"
+  checksum: 10c0/5c95e5774b5ea49492cb3fa8f1949aea67048a0b84af33acb555e7139abfcf3c83aca2b83e0c5008755bc230166df7b5e469d1e3eb6746c48f215f3672609fed
+  languageName: node
+  linkType: hard
+
 "http-cache-semantics@npm:^4.1.1":
   version: 4.1.1
   resolution: "http-cache-semantics@npm:4.1.1"
@@ -924,6 +931,7 @@ __metadata:
   dependencies:
     "@vitejs/plugin-vue": "npm:^5.1.4"
     date-fns: "npm:^4.1.0"
+    hammerjs: "npm:^2.0.8"
     vite: "npm:^5.4.10"
     vue: "npm:^3.5.12"
   languageName: unknown
