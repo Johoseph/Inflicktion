@@ -8,5 +8,3 @@ export const getCardDimensions = (desiredHeight, cardOverlap) => {
     marginRight,
   };
 };
-
-export const CARD_BACK = `<p>back</p>`;
