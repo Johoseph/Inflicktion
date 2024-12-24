@@ -26,6 +26,10 @@
   align-items: center;
   flex-direction: column;
   gap: 6em;
+
+  @media screen and (max-width: 500px) {
+    gap: 2em;
+  }
 }
 
 @keyframes opacity-in {

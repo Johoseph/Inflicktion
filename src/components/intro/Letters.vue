@@ -7,6 +7,10 @@
 .letter {
   position: relative;
   height: 7em;
+
+  @media screen and (max-width: 500px) {
+    height: 2em;
+  }
 }
 </style>
 

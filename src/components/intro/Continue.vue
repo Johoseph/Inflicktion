@@ -4,6 +4,10 @@
   height: 2em;
 
   animation: blink 600ms alternate infinite;
+
+  @media screen and (max-width: 500px) {
+    height: 1em;
+  }
 }
 
 @keyframes blink {
