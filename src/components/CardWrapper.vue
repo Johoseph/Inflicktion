@@ -5,6 +5,8 @@
   flex-shrink: 0;
   position: relative;
   top: 50px;
+
+  touch-action: none;
 }
 
 @keyframes wrapper-slide-right {
@@ -57,6 +59,8 @@ const cardWrapperLeftHTML = useTemplateRef('cardWrapperLeftHTML')
 const cardWrapperRightHTML = useTemplateRef('cardWrapperRightHTML')
 const cardWrapperPositionLeft = ref(0);
 
+const setWrapperPositionLeft = (position) => cardWrapperPositionLeft.value = position;
+
 // Refs for CardWrapper content
 const cardsLeftConfig = ref(cardConfig);
 const cardsRightConfig = ref([]);
@@ -87,7 +91,10 @@ const handleCardClick = (clickedCardIndex) => {
   }, 300);
 }
 
-const handleMouseMove = (mouseEvent) => {
+const handleMouseMove = (pointerEvent) => {
+  // If this was fired by touch, do nothing
+  if (pointerEvent.pointerType === "touch") return;
+
   const horizontalCenter = document.body.clientWidth / 2;
   const mouseCenterDelta = -(horizontalCenter - mouseEvent.clientX);
 
@@ -122,15 +129,15 @@ watchEffect(() => {
 })
 
 onBeforeMount(() => {
-  window.addEventListener("mousemove", handleMouseMove);
+  window.addEventListener("pointermove", handleMouseMove);
 })
 
 onMounted(() => {
-  useCardWrapperPan(cardWrapperLeftHTML.value);
+  useCardWrapperPan(cardWrapperLeftHTML.value, setWrapperPositionLeft);
 })
 
 onUnmounted(() => {
-  window.removeEventListener("mousemove", handleMouseMove);
+  window.removeEventListener("pointermove", handleMouseMove);
   clearTimeout(timeout);
 })
 </script>

@@ -4,7 +4,7 @@ import { computed, onUnmounted } from "vue";
 /**
  * Instantiates hammer listeners - call in onMounted
  */
-export function useCardWrapperPan(targetDiv) {
+export function useCardWrapperPan(targetDiv, setWrapperPositionLeft) {
   let currentX = 0,
     startX = 0,
     velocity = 0,
@@ -35,7 +35,7 @@ export function useCardWrapperPan(targetDiv) {
         currentX = handleNextX(currentX, nextX);
         velocity *= friction;
 
-        targetDiv.style.left = `${currentX}px`;
+        targetDiv.style.left = setWrapperPositionLeft(currentX);
 
         requestAnimationFrame(step);
       } else {
@@ -47,10 +47,10 @@ export function useCardWrapperPan(targetDiv) {
   };
 
   // Touch Behavior using Hammer.js
-  const hammer = new Hammer(targetDiv);
+  const hammer = new Hammer(document.body);
   hammer.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
-  hammer.on("panstart", (e) => {
+  hammer.on("panstart", () => {
     startX = currentX;
     isAnimating = false;
   });
@@ -58,7 +58,7 @@ export function useCardWrapperPan(targetDiv) {
   hammer.on("panmove", (e) => {
     const nextX = startX + e.deltaX;
     currentX = handleNextX(startX, nextX);
-    targetDiv.style.left = `${currentX}px`;
+    targetDiv.style.left = setWrapperPositionLeft(currentX);
   });
 
   hammer.on("panend", (e) => {
